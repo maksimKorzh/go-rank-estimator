@@ -1,0 +1,79 @@
+2025-02-19 15:19:59+0200: Running with following config:
+allowResignation = true
+lagBuffer = 1.0
+logAllGTPCommunication = true
+logDir = gtp_logs
+logSearchInfo = true
+logSearchInfoForChosenMove = false
+logToStderr = false
+maxPlayouts = 1
+maxVisitsPondering = 1
+numAnalysisThreads = 1
+numSearchThreads = 6
+ponderingEnabled = false
+resignConsecTurns = 3
+resignThreshold = -0.90
+rules = tromp-taylor
+searchFactorAfterOnePass = 0.50
+searchFactorAfterTwoPass = 0.25
+searchFactorWhenWinning = 0.40
+searchFactorWhenWinningThreshold = 0.95
+
+2025-02-19 15:19:59+0200: Analysis Engine starting...
+2025-02-19 15:19:59+0200: KataGo v1.15.3
+2025-02-19 15:19:59+0200: nnRandSeed0 = 4142806153871056486
+2025-02-19 15:19:59+0200: After dedups: nnModelFile0 = /home/cmk/katago/default_model.txt.gz useFP16 auto useNHWC auto
+2025-02-19 15:19:59+0200: Initializing neural net buffer to be size 19 * 19 allowing smaller boards
+2025-02-19 15:20:00+0200: Eigen (CPU) backend thread 0: Model version 8
+2025-02-19 15:20:00+0200: Eigen (CPU) backend thread 0: Model name: b10c128-s1141046784-d204142634
+2025-02-19 15:20:00+0200: Eigen (CPU) backend thread 1: Model version 8
+2025-02-19 15:20:00+0200: Eigen (CPU) backend thread 1: Model name: b10c128-s1141046784-d204142634
+2025-02-19 15:20:00+0200: --------------
+2025-02-19 15:20:00+0200: WARNING: Config had unused keys! You may have a typo, an option you specified is being unused from /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'allowResignation' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'logAllGTPCommunication' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'logSearchInfoForChosenMove' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'ponderingEnabled' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'resignConsecTurns' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'resignThreshold' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'rules' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'searchFactorWhenWinning' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: WARNING: Unused key 'searchFactorWhenWinningThreshold' in /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: --------------
+2025-02-19 15:20:00+0200: Loaded config /home/cmk/katago/default_gtp.cfg
+2025-02-19 15:20:00+0200: Loaded model /home/cmk/katago/default_model.txt.gz
+2025-02-19 15:20:00+0200: Analyzing up to 1 positions at a time in parallel
+2025-02-19 15:20:00+0200: Started, ready to begin handling requests
+2025-02-19 15:20:00+0200: MoveNum: 3 HASH: B4B8700B32E3E1085107AEB51D2CF1C5
+   A B C D E F G H J K L M N O P Q R S T
+19 . . . . . . . . . . . . . . . . . . .
+18 . . . . . . . . . . . . . . . . . . .
+17 . . . . . . . . . . . . . . . . . . .
+16 . . . O2. . . . . . . . . . . . X1. .
+15 . . . . . . . . . . . . . . . . . . .
+14 . . . . . . . . . . . . . . . . . . .
+13 . . . . . . . . . . . . . . . . . . .
+12 . . . . . . . . . . . . . . . . . . .
+11 . . . . . . . . . . . . . . . . . . .
+10 . . . . . . . . . . . . . . . . . . .
+ 9 . . . . . . . . . . . . . . . . . . .
+ 8 . . . . . . . . . . . . . . . . . . .
+ 7 . . . . . . . . . . . . . . . . . . .
+ 6 . . . . . . . . . . . . . . . . . . .
+ 5 . . . . . . . . . . . . . . . . . . .
+ 4 . . . . . . . . . . . . . . . X3. . .
+ 3 . . . . . . . . . . . . . . . . . . .
+ 2 . . . . . . . . . . . . . . . . . . .
+ 1 . . . . . . . . . . . . . . . . . . .
+
+koSIMPLEscoreAREAtaxNONEsui0whbNfpok1komi6.5
+Root visits: 1
+New playouts: 1
+NN rows: 1
+NN batches: 1
+NN avg batch size: 1
+PV: D4
+Tree:
+: T  -9.38c W  -9.03c S  -0.34c ( -1.3 L  -0.8) N       1  --  D4
+---White(^)---
+
