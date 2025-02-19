@@ -232,7 +232,7 @@ if __name__ == "__main__":
     white_performance = math.floor(white_performance / len(white_scores));
     black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
     white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
-    print("Black Rank: OGS " + str(black_rank) + ", FOX " + str(ogs_to_fox(black_rank)))
-    print("White Rank: OGS " + str(white_rank) + ", FOX " + str(ogs_to_fox(white_rank)))
-    input()
+    print("Black Rank: ~OGS " + str(black_rank) + ", ~FOX " + str(ogs_to_fox(black_rank)))
+    print("White Rank: ~OGS " + str(white_rank) + ", ~FOX " + str(ogs_to_fox(white_rank)))
+    input("Press any key to exit...")
     katago.close()
