@@ -1,8 +1,5 @@
 """
-This is a simple python program that demonstrates how to run KataGo's
-analysis engine as a subprocess and send it a query. It queries the
-result of playing the 4-4 point on an empty board and prints out
-the json response.
+Estimate OGS/FOX rank for black and white player
 """
 
 import argparse
@@ -170,6 +167,7 @@ if __name__ == "__main__":
     prev_policy = []
     black_scores = []
     white_scores = []
+    move_num = 1
     for node in game.get_main_sequence()[:-2]:
         if node.get_move()[0] is not None:
             moves.append(node.get_move())
@@ -182,23 +180,20 @@ if __name__ == "__main__":
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             #print_move(user_move)
-            
-            #print('NN choice:', score_move(user_move, prev_policy))
+            print("Move " + str(move_num) + ", NN #" + str(score_move(user_move, prev_policy)))
+            move_num += 1
+            #print(sgfmill.ascii_boards.render_board(displayboard))
             if node.get_move()[0] == 'b': black_scores.append(score)
             elif node.get_move()[0] == 'w': white_scores.append(score)
-
-
-
-
-            #board_array = []
-            #[[board_array.append(y) for y in i] for i in displayboard.__dict__["board"]]
-            #print_board_array(board_array)
-            #print(sgfmill.ascii_boards.render_board(displayboard))
-            #print_policy(prev_policy)
             prev_policy = result["policy"]
+    black_performance = 0;
+    white_performance = 0;
+    for i in black_scores: black_performance += i
+    for i in white_scores: white_performance += i
+    black_performance = math.floor(black_performance / len(black_scores));
+    white_performance = math.floor(white_performance / len(white_scores));
+    black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
+    white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
+    print("Black Rank: OGS", black_rank)
+    print("White Rank: OGS", white_rank)
     katago.close()
-
-'''
-We don't care about displayed coords, we care about actual indices.
-So for the first move coords are row 15, col 16, starting from top left.
-'''
