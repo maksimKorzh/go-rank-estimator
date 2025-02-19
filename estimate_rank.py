@@ -125,6 +125,45 @@ def score_move(move, policy):
     user_move_score = policy[move]
     return best_moves.index(user_move_score)+1
 
+def ogs_to_fox(rank):
+    ranks = {
+        '23k': '18k',
+        '22k': '17k',
+        '21k': '16k',
+        '20k': '15k',
+        '19k': '14k',
+        '18k': '13k',
+        '17k': '12k',
+        '16k': '11k',
+        '15k': '10k',
+        '14k': '9k',
+        '13k': '8k',
+        '12k': '7k',
+        '11k': '6k',
+        '10k': '5k',
+        '9k': '4k',
+        '8k': '3k',
+        '7k': '2k',
+        '6k': '1k',
+        '5k': '1d',
+        '4k': '2d',
+        '3k': '3d',
+        '2k': '4d',
+        '1k': '5d',
+        '1d': '6d',
+        '2d': '7d',
+        '3d': '8d',
+        '4d': '9d',
+        '5d': '1p',
+        '6d': '2p',
+        '7d': '3p',
+        '8d': '4p',
+        '9d': '5p',
+    }
+    
+    try: return ranks[rank]
+    except: return '18k'
+
 if __name__ == "__main__":
     description = """
     Example script showing how to run KataGo analysis engine and query it from python.
@@ -179,13 +218,12 @@ if __name__ == "__main__":
                     displayboard.play(row,col,color)
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
-            #print_move(user_move)
             print("Move " + str(move_num) + ", NN #" + str(score_move(user_move, prev_policy)))
             move_num += 1
-            #print(sgfmill.ascii_boards.render_board(displayboard))
             if node.get_move()[0] == 'b': black_scores.append(score)
             elif node.get_move()[0] == 'w': white_scores.append(score)
             prev_policy = result["policy"]
+    print(sgfmill.ascii_boards.render_board(displayboard))
     black_performance = 0;
     white_performance = 0;
     for i in black_scores: black_performance += i
@@ -194,6 +232,7 @@ if __name__ == "__main__":
     white_performance = math.floor(white_performance / len(white_scores));
     black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
     white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
-    print("Black Rank: OGS", black_rank)
-    print("White Rank: OGS", white_rank)
+    print("Black Rank: OGS " + str(black_rank) + ", FOX " + str(ogs_to_fox(black_rank)))
+    print("White Rank: OGS " + str(white_rank) + ", FOX " + str(ogs_to_fox(white_rank)))
+    input()
     katago.close()
