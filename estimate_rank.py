@@ -213,9 +213,11 @@ if __name__ == "__main__":
             displayboard = board.copy()
             for color, move in moves:
                 if move != "pass":
-                    row,col = move
-                    user_move = (18-row)*19+col
-                    displayboard.play(row,col,color)
+                    try:
+                        row,col = move
+                        user_move = (18-row)*19+col
+                        displayboard.play(row,col,color)
+                    except: pass
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             print("Move " + str(move_num) + ", NN #" + str(score_move(user_move, prev_policy)))
