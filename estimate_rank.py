@@ -219,7 +219,7 @@ if __name__ == "__main__":
                     except: pass
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
-            print("Move " + str(move_num) + ", NN #" + str(score_move(user_move, prev_policy)))
+            print("Move " + str(move_num) + " (" + node.get_move()[0] + "): NN #" + str(score_move(user_move, prev_policy)))
             move_num += 1
             if node.get_move()[0] == 'b': black_scores.append(score)
             elif node.get_move()[0] == 'w': white_scores.append(score)
