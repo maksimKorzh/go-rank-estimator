@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Estimate Rank
-Exec=python3 /home/cmk/go-rank-estimator/estimate_rank.py -katago-path /home/cmk/katago/katago -config-path /home/cmk/katago/default_gtp.cfg -model-path /home/cmk/katago/default_model.txt.gz -sgf-file /home/cmk/go-rank-estimator/game.sgf
+Exec=python3 /home/cmk/go-rank-estimator/estimate_rank.py -katago-path /home/cmk/katago/katago -config-path /home/cmk/katago/gtp.cfg -model-path /home/cmk/katago/kata1-b10c128.txt.gz -sgf-file /home/cmk/go-rank-estimator/game.sgf
 Comment=
 Terminal=true
 PrefersNonDefaultGPU=true
