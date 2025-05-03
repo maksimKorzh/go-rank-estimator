@@ -142,11 +142,10 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
 
     # -------------------- Draw graph --------------------
     moves = np.arange(len(scores))
-    ax_graph.plot(moves, scores, label='Score lead (B+)')
+    ax_graph.plot(moves, scores)
 
     ax_graph.axhline(0, color='gray', linewidth=0.5, linestyle='--')
     ax_graph.grid(True)
-    ax_graph.legend(loc='upper right')
 
     plt.tight_layout(rect=[0, 0.03, 1, 1])  # leave space for bottom label
     plt.show()
