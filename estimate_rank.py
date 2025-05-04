@@ -168,44 +168,6 @@ def score_move(move, policy):
     user_move_score = policy[move]
     return best_moves.index(user_move_score)+1
 
-def ogs_to_fox(rank):
-    ranks = {
-        '22k': '18k',
-        '21k': '17k',
-        '20k': '16k',
-        '19k': '15k',
-        '18k': '14k',
-        '17k': '13k',
-        '16k': '12k',
-        '15k': '11k',
-        '14k': '10k',
-        '13k': '9k',
-        '12k': '8k',
-        '11k': '7k',
-        '10k': '6k',
-        '9k': '5k',
-        '8k': '4k',
-        '7k': '3k',
-        '6k': '2k',
-        '5k': '1k',
-        '4k': '1d',
-        '3k': '2d',
-        '2k': '3d',
-        '1k': '4d',
-        '1d': '5d',
-        '2d': '6d',
-        '3d': '7d',
-        '4d': '8d',
-        '5d': '9d',
-        '6d': '1p',
-        '7d': '2p',
-        '8d': '3p',
-        '9d': '4p',
-    }
-    
-    try: return ranks[rank]
-    except: return '18k'
-
 if __name__ == '__main__':
     description = '''
     Example script showing how to run KataGo analysis engine and query it from python.
@@ -264,12 +226,11 @@ if __name__ == '__main__':
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             score_lead.append(result['rootInfo']['scoreLead'])
-            print('Move ' + str(move_num) + ' (' + node.get_move()[0] + '): NN #' + str(score_move(user_move, prev_policy)) + ' Score: ' + str(result['rootInfo']['scoreLead']))
+            print('Move ' + str(move_num) + ' (' + node.get_move()[0] + '):\tNN #' + str(score_move(user_move, prev_policy)) + '\t\tScore: ' + str(result['rootInfo']['scoreLead']))
             move_num += 1
             if node.get_move()[0] == 'b': black_scores.append(score)
             elif node.get_move()[0] == 'w': white_scores.append(score)
             prev_policy = result['policy']
-    print(sgfmill.ascii_boards.render_board(displayboard))
     black_performance = 0;
     white_performance = 0;
     for i in black_scores: black_performance += i
@@ -278,8 +239,6 @@ if __name__ == '__main__':
     white_performance = math.floor(white_performance / len(white_scores));
     black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
     white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
-    print('Black Rank: ~OGS ' + str(black_rank) + ', ~FOX ' + str(ogs_to_fox(black_rank)))
-    print('White Rank: ~OGS ' + str(white_rank) + ', ~FOX ' + str(ogs_to_fox(white_rank)))
     score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
     stones = get_board_array(displayboard.board)
     final_label = 'Black [' + str(black_rank) + '] vs White [' + str(white_rank) + '], '
