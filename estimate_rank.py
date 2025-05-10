@@ -17,9 +17,20 @@ import matplotlib
 matplotlib.rcParams['toolbar'] = 'none'  # Disable toolbar before pyplot is imported
 import matplotlib.pyplot as plt
 import numpy as np
+import requests
+from bs4 import BeautifulSoup
 
 Color = Union[Literal['b'],Literal['w']]
 Move = Union[None,Literal['pass'],Tuple[int,int]]
+
+def download_game():
+    print('Trying to download last CMK game from IGS...')
+    response = requests.get('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MHkey=XIDIAQEBXYUSFYDCROSWFRBB&pg=SearchResult')
+    content = BeautifulSoup(response.text, 'lxml')
+    game_url = [i for i in content.find_all('a') if 'SGF' in i.text][0]['href']
+    game_sgf = requests.get(game_url).text
+    with open('/home/cmk/go-rank-estimator/game.sgf', 'w') as f: f.write(game_sgf)
+    print('Downloaded game')
 
 def sgfmill_to_str(move: Move) -> str:
     if move is None:
@@ -169,6 +180,8 @@ def score_move(move, policy):
     return best_moves.index(user_move_score)+1
 
 if __name__ == '__main__':
+    try: download_game()
+    except: print('Failed. Probably you are not CMK. Using existing "game.sgf"')
     description = '''
     Example script showing how to run KataGo analysis engine and query it from python.
     '''
