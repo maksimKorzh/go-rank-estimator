@@ -180,7 +180,8 @@ def score_move(move, policy):
     return best_moves.index(user_move_score)+1
 
 if __name__ == '__main__':
-    try: download_game()
+    try:
+      if input('Download last cmk game from IGS? (y/n)') == 'y': download_game()
     except: print('Failed. Probably you are not CMK. Using existing "game.sgf"')
     description = '''
     Example script showing how to run KataGo analysis engine and query it from python.
