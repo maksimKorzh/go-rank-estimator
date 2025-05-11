@@ -22,7 +22,6 @@ from bs4 import BeautifulSoup
 
 Color = Union[Literal['b'],Literal['w']]
 Move = Union[None,Literal['pass'],Tuple[int,int]]
-kifu = {}
 
 def download_game():
     print('Trying to download last CMK game from IGS...')
@@ -169,13 +168,6 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
     plt.tight_layout(rect=[0, 0.03, 1, 1])  # leave space for bottom label
     plt.show()
 
-def get_board_array(board):
-    position = []
-    for row in range(19):
-      for col in range(19):
-        if board[row][col]: position.append((col, row, board[row][col]))
-    return position
-
 def print_move(move):
     row = math.floor(move / 19)
     col = move % 19
@@ -226,6 +218,8 @@ if __name__ == '__main__':
     b_player = root_node.get('PB')
     w_player = root_node.get('PW')
     moves = []
+    stones = []
+    kifu = {}
     katago = KataGo(args['katago_path'], args['config_path'], args['model_path'])
     board = sgfmill.boards.Board(19)
     komi = 6.5
@@ -248,7 +242,9 @@ if __name__ == '__main__':
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             score_lead.append(result['rootInfo']['scoreLead'])
-            try: kifu[node.get_move()[1][0], node.get_move()[1][1]] = move_num
+            try:
+              stones.append((node.get_move()[1][1], node.get_move()[1][0], node.get_move()[0]))
+              kifu[node.get_move()[1][0], node.get_move()[1][1]] = move_num
             except: pass
             print('Move ' + str(move_num) + ' (' + node.get_move()[0] + '):\tNN #' + str(score_move(user_move, prev_policy)) + '\t\tScore: ' + str(result['rootInfo']['scoreLead']))
             move_num += 1
@@ -264,7 +260,6 @@ if __name__ == '__main__':
     black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
     white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
     score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
-    stones = get_board_array(displayboard.board)
     final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
     final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5])
     draw_go_with_graph(stones, score_lead, final_label=final_label)
