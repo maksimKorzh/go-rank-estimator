@@ -22,6 +22,7 @@ from bs4 import BeautifulSoup
 
 Color = Union[Literal['b'],Literal['w']]
 Move = Union[None,Literal['pass'],Tuple[int,int]]
+kifu = {}
 
 def download_game():
     print('Trying to download last CMK game from IGS...')
@@ -138,12 +139,19 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
         for y in stars:
             ax_board.plot(x, y, 'ko', markersize=4)
 
-    # Stones
-    for x, y, color in stones:
+    # Stones with move numbers
+    for idx, (x, y, color) in enumerate(stones):
         if color == 'b':
             ax_board.plot(x, y, 'ko', markersize=17)
+            text_color = 'white'
         elif color == 'w':
             ax_board.plot(x, y, 'o', markersize=17, markerfacecolor='white', markeredgecolor='black')
+            text_color = 'black'
+        else:
+            continue
+
+        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=8, ha='center', va='center', fontweight='bold')
+        except: pass
 
     ax_board.set_xlim(-0.5, board_size - 0.5)
     ax_board.set_ylim(-0.5, board_size - 0.5)
@@ -240,6 +248,8 @@ if __name__ == '__main__':
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             score_lead.append(result['rootInfo']['scoreLead'])
+            try: kifu[node.get_move()[1][0], node.get_move()[1][1]] = move_num
+            except: pass
             print('Move ' + str(move_num) + ' (' + node.get_move()[0] + '):\tNN #' + str(score_move(user_move, prev_policy)) + '\t\tScore: ' + str(result['rootInfo']['scoreLead']))
             move_num += 1
             if node.get_move()[0] == 'b': black_scores.append(score)
@@ -255,7 +265,7 @@ if __name__ == '__main__':
     white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
     score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
     stones = get_board_array(displayboard.board)
-    final_label = 'Black [' + str(black_rank) + '] vs White [' + str(white_rank) + '], '
+    final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
     final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5])
     draw_go_with_graph(stones, score_lead, final_label=final_label)
     katago.close()
