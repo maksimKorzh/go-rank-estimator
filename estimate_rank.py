@@ -120,7 +120,7 @@ def print_policy(policy):
 
 def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
     fig, (ax_board, ax_graph) = plt.subplots(
-        2, 1, figsize=(6, 8), gridspec_kw={'height_ratios': [3, 1]}
+        2, 1, figsize=(8, 10), gridspec_kw={'height_ratios': [3, 1]}
     )
     fig.canvas.manager.set_window_title('KataGo Rank Estimator')
 
@@ -136,20 +136,20 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
     stars = hoshi_points(board_size)
     for x in stars:
         for y in stars:
-            ax_board.plot(x, y, 'ko', markersize=4)
+            ax_board.plot(x, y, 'ko', markersize=6)
 
     # Stones with move numbers
     for idx, (x, y, color) in enumerate(stones):
         if color == 'b':
-            ax_board.plot(x, y, 'ko', markersize=17)
+            ax_board.plot(x, y, 'ko', markersize=24)
             text_color = 'white'
         elif color == 'w':
-            ax_board.plot(x, y, 'o', markersize=17, markerfacecolor='white', markeredgecolor='black')
+            ax_board.plot(x, y, 'o', markersize=24, markerfacecolor='white', markeredgecolor='black')
             text_color = 'black'
         else:
             continue
 
-        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=8, ha='center', va='center', fontweight='bold')
+        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=10, ha='center', va='center', fontweight='bold')
         except: pass
 
     ax_board.set_xlim(-0.5, board_size - 0.5)
@@ -165,7 +165,7 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
     ax_graph.axhline(0, color='gray', linewidth=0.5, linestyle='--')
     ax_graph.grid(True)
 
-    plt.tight_layout(rect=[0, 0.03, 1, 1])  # leave space for bottom label
+    plt.tight_layout(rect=[0, 0, 1, 1])  # leave space for bottom label
     plt.show()
 
 def print_move(move):
