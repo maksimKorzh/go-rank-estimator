@@ -25,7 +25,7 @@ Move = Union[None,Literal['pass'],Tuple[int,int]]
 
 def download_game():
     print('Trying to download last CMK game from IGS...')
-    response = requests.get('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MHkey=XIDIAQEBXYUSFYDCROSWFRBB&pg=SearchResult')
+    response = requests.get('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MHkey=BLZMFCYPQEDBCQPSOXHIBXVH&pg=SearchResult')
     content = BeautifulSoup(response.text, 'lxml')
     game_url = [i for i in content.find_all('a') if 'SGF' in i.text][0]['href']
     game_sgf = requests.get(game_url).text
