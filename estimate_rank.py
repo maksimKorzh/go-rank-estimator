@@ -19,18 +19,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
+from getpass import getpass
+import re
 
 Color = Union[Literal['b'],Literal['w']]
 Move = Union[None,Literal['pass'],Tuple[int,int]]
 
 def download_game():
-    print('Trying to download last CMK game from IGS...')
-    response = requests.get('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MHkey=BLZMFCYPQEDBCQPSOXHIBXVH&pg=SearchResult')
+  s = requests.Session()
+  payload = {
+      'userid': input('user: '),
+      'password': getpass('password: '),
+  }
+  r = s.post('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MH', data=payload)
+  match = re.search(r'mypage\.php\?key=([A-Z0-9]+)', r.text)
+  if match:
+    key = match.group(1)
+    print('Trying to download your last game from IGS...')
+    response = requests.get('https://my.pandanet.co.jp/cgi-bin/cgi.exe?MHkey=' + key + '&pg=SearchResult')
     content = BeautifulSoup(response.text, 'lxml')
     game_url = [i for i in content.find_all('a') if 'SGF' in i.text][0]['href']
     game_sgf = requests.get(game_url).text
     with open('/home/cmk/go-rank-estimator/game.sgf', 'w') as f: f.write(game_sgf)
     print('Downloaded game')
+  else:
+    print('Login failed. Using local "game.sgf"')
+
 
 def sgfmill_to_str(move: Move) -> str:
     if move is None:
