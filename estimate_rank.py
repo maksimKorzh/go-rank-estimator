@@ -174,8 +174,8 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
     # -------------------- Draw graph --------------------
     moves = np.arange(len(scores))
     offset = max(scores) + 10
-    ax_graph.plot(moves, [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
-    ax_graph.plot(moves, [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
+    ax_graph.plot(np.arange(len(black)*2), [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
+    ax_graph.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
     ax_graph.plot(moves, scores, color='blue', label='score lead (territory points)')
     ax_graph.axhline(0, color='black', linewidth=0.5, linestyle='--')
     ax_graph.grid(True)
