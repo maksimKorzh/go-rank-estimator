@@ -55,7 +55,6 @@ def sgfmill_to_str(move: Move) -> str:
     return 'ABCDEFGHJKLMNOPQRSTUVWXYZ'[x] + str(y+1)
 
 class KataGo:
-
     def __init__(self, katago_path: str, config_path: str, model_path: str, additional_args: List[str] = []):
         self.query_counter = 0
         katago = subprocess.Popen(
@@ -132,7 +131,7 @@ def print_policy(policy):
         print()
     print()
 
-def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
+def draw_go_with_graph(stones, scores, black, white, final_label=None, board_size=19):
     fig, (ax_board, ax_graph) = plt.subplots(
         2, 1, figsize=(8, 10), gridspec_kw={'height_ratios': [3, 1]}
     )
@@ -174,10 +173,13 @@ def draw_go_with_graph(stones, scores, final_label=None, board_size=19):
 
     # -------------------- Draw graph --------------------
     moves = np.arange(len(scores))
-    ax_graph.plot(moves, scores)
-
-    ax_graph.axhline(0, color='gray', linewidth=0.5, linestyle='--')
+    offset = max(scores) + 10
+    ax_graph.plot(moves, [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
+    ax_graph.plot(moves, [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
+    ax_graph.plot(moves, scores, color='blue', label='score lead (territory points)')
+    ax_graph.axhline(0, color='black', linewidth=0.5, linestyle='--')
     ax_graph.grid(True)
+    ax_graph.legend()
 
     plt.tight_layout(rect=[0, 0, 1, 1])  # leave space for bottom label
     plt.show()
@@ -194,9 +196,9 @@ def score_move(move, policy):
     return best_moves.index(user_move_score)+1
 
 if __name__ == '__main__':
-    try:
-      if input('Download last cmk game from IGS? (y/n)') == 'y': download_game()
-    except: print('Failed. Probably you are not CMK. Using existing "game.sgf"')
+#    try:
+#      if input('Download last cmk game from IGS? (y/n)') == 'y': download_game()
+#    except: print('Failed. Probably you are not CMK. Using existing "game.sgf"')
     description = '''
     Example script showing how to run KataGo analysis engine and query it from python.
     '''
@@ -276,5 +278,5 @@ if __name__ == '__main__':
     score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
     final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
     final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5])
-    draw_go_with_graph(stones, score_lead, final_label=final_label)
+    draw_go_with_graph(stones, score_lead, black_scores, white_scores, final_label=final_label)
     katago.close()
