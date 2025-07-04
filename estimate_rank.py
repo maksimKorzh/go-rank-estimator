@@ -132,8 +132,8 @@ def print_policy(policy):
     print()
 
 def draw_go_with_graph(stones, scores, black, white, final_label=None, board_size=19):
-    fig, (ax_board, ax_graph) = plt.subplots(
-        2, 1, figsize=(8, 10), gridspec_kw={'height_ratios': [3, 1]}
+    fig, (ax_board, ax_scores, ax_perf) = plt.subplots(
+        3, 1, figsize=(8, 12), gridspec_kw={'height_ratios': [3, 1, 1]}
     )
     fig.canvas.manager.set_window_title('KataGo Rank Estimator')
 
@@ -154,15 +154,15 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
     # Stones with move numbers
     for idx, (x, y, color) in enumerate(stones):
         if color == 'b':
-            ax_board.plot(x, y, 'ko', markersize=24)
+            ax_board.plot(x, y, 'ko', markersize=18)
             text_color = 'white'
         elif color == 'w':
-            ax_board.plot(x, y, 'o', markersize=24, markerfacecolor='white', markeredgecolor='black')
+            ax_board.plot(x, y, 'o', markersize=18, markerfacecolor='white', markeredgecolor='black')
             text_color = 'black'
         else:
             continue
 
-        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=10, ha='center', va='center', fontweight='bold')
+        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=6, ha='center', va='center', fontweight='bold')
         except: pass
 
     ax_board.set_xlim(-0.5, board_size - 0.5)
@@ -174,12 +174,15 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
     # -------------------- Draw graph --------------------
     moves = np.arange(len(scores))
     offset = max(scores) + 10
-    ax_graph.plot(np.arange(len(black)*2), [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
-    ax_graph.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
-    ax_graph.plot(moves, scores, color='blue', label='score lead (territory points)')
-    ax_graph.axhline(0, color='black', linewidth=0.5, linestyle='--')
-    ax_graph.grid(True)
-    ax_graph.legend()
+    ax_perf.plot(np.arange(len(black)*2), [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
+    ax_perf.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
+    ax_scores.plot(moves, scores, color='blue', label='score lead (territory points)')
+    ax_scores.axhline(0, color='black', linewidth=0.5, linestyle='--')
+    ax_scores.grid(True)
+    ax_scores.legend()
+    ax_perf.axhline(0, color='black', linewidth=0.5, linestyle='--')
+    ax_perf.grid(True)
+    ax_perf.legend()
 
     plt.tight_layout(rect=[0, 0, 1, 1])  # leave space for bottom label
     plt.show()
