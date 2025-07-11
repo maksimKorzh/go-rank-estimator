@@ -1,6 +1,4 @@
-'''
-Estimate OGS/FOX rank for black and white player
-'''
+# Estimate OGS/FOX rank for black and white player
 
 import argparse
 import json
@@ -16,6 +14,7 @@ from typing import Tuple, List, Optional, Union, Literal, Any, Dict
 import matplotlib
 matplotlib.rcParams['toolbar'] = 'none'  # Disable toolbar before pyplot is imported
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
@@ -131,18 +130,87 @@ def print_policy(policy):
         print()
     print()
 
-def draw_go_with_graph(stones, scores, black, white, final_label=None, board_size=19):
-    fig, (ax_board, ax_scores, ax_perf) = plt.subplots(
-        3, 1, figsize=(8, 12), gridspec_kw={'height_ratios': [3, 1, 1]}
-    )
+#def draw_go_with_graph(stones, scores, winrates, black, white, final_label=None, board_size=19):
+#    fig, (ax_board, ax_scores, ax_winrates, ax_perf) = plt.subplots(
+#        4, 1, figsize=(8, 12), gridspec_kw={'height_ratios': [3, 1, 1, 1]}
+#    )
+#    fig.canvas.manager.set_window_title('KataGo Rank Estimator')
+#
+#    # -------------------- Draw Go board --------------------
+#    for i in range(board_size):
+#        ax_board.plot([0, board_size - 1], [i, i], color='black')
+#        ax_board.plot([i, i], [0, board_size - 1], color='black')
+#
+#    # Star points
+#    def hoshi_points(size):
+#        return [3, 9, 15] if size == 19 else []
+#
+#    stars = hoshi_points(board_size)
+#    for x in stars:
+#        for y in stars:
+#            ax_board.plot(x, y, 'ko', markersize=6)
+#
+#    # Stones with move numbers
+#    for idx, (x, y, color) in enumerate(stones):
+#        if color == 'b':
+#            ax_board.plot(x, y, 'ko', markersize=18)
+#            text_color = 'white'
+#        elif color == 'w':
+#            ax_board.plot(x, y, 'o', markersize=18, markerfacecolor='white', markeredgecolor='black')
+#            text_color = 'black'
+#        else:
+#            continue
+#
+#        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=6, ha='center', va='center', fontweight='bold')
+#        except: pass
+#
+#    ax_board.set_xlim(-0.5, board_size - 0.5)
+#    ax_board.set_ylim(-0.5, board_size - 0.5)
+#    ax_board.set_aspect('equal')
+#    ax_board.axis('off')
+#    ax_board.set_title(final_label, fontfamily='Monospace')
+#
+#    # -------------------- Draw graph --------------------
+#    moves = np.arange(len(scores))
+#    offset = max(scores) + 10
+#    winrates = [winrates[i] if i%2 else winrates[i-1] for i in range(len(winrates))]
+#    ax_perf.plot(np.arange(len(black)*2), [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
+#    ax_perf.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
+#    ax_winrates.plot(moves, winrates, color='red', label='winrate (black percentage)')
+#    ax_scores.plot(moves, scores, color='blue', label='score lead (territory points)')
+#    ax_scores.axhline(0, color='black', linewidth=0.5, linestyle='--')
+#    ax_scores.grid(True)
+#    ax_scores.legend()
+#    ax_perf.axhline(0, color='black', linewidth=0.5, linestyle='--')
+#    ax_perf.grid(True)
+#    ax_perf.legend()
+#    ax_winrates.axhline(0, color='black', linewidth=0.5, linestyle='--')
+#    ax_winrates.grid(True)
+#    ax_winrates.legend()
+#
+#    plt.tight_layout(rect=[0, 0, 1, 1])  # leave space for bottom label
+#    plt.show()
+
+def draw_go_with_graph(stones, scores, winrates, black, white, final_label=None, board_size=19):
+    fig = plt.figure(figsize=(12, 8))
     fig.canvas.manager.set_window_title('KataGo Rank Estimator')
+
+    # Create a 3-row, 2-column layout with custom width ratios
+    gs = gridspec.GridSpec(3, 2, width_ratios=[1, 1], height_ratios=[1, 1, 1])
+
+    # Go board takes all 3 rows of the left column
+    ax_board = fig.add_subplot(gs[:, 0])
+
+    # Each graph in its own row in the right column
+    ax_scores = fig.add_subplot(gs[0, 1])
+    ax_winrates = fig.add_subplot(gs[1, 1])
+    ax_perf = fig.add_subplot(gs[2, 1])
 
     # -------------------- Draw Go board --------------------
     for i in range(board_size):
         ax_board.plot([0, board_size - 1], [i, i], color='black')
         ax_board.plot([i, i], [0, board_size - 1], color='black')
 
-    # Star points
     def hoshi_points(size):
         return [3, 9, 15] if size == 19 else []
 
@@ -151,7 +219,6 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
         for y in stars:
             ax_board.plot(x, y, 'ko', markersize=6)
 
-    # Stones with move numbers
     for idx, (x, y, color) in enumerate(stones):
         if color == 'b':
             ax_board.plot(x, y, 'ko', markersize=18)
@@ -161,9 +228,10 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
             text_color = 'black'
         else:
             continue
-
-        try: ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=6, ha='center', va='center', fontweight='bold')
-        except: pass
+        try:
+            ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=6, ha='center', va='center', fontweight='bold')
+        except:
+            pass
 
     ax_board.set_xlim(-0.5, board_size - 0.5)
     ax_board.set_ylim(-0.5, board_size - 0.5)
@@ -171,22 +239,28 @@ def draw_go_with_graph(stones, scores, black, white, final_label=None, board_siz
     ax_board.axis('off')
     ax_board.set_title(final_label, fontfamily='Monospace')
 
-    # -------------------- Draw graph --------------------
+    # -------------------- Draw graphs --------------------
     moves = np.arange(len(scores))
-    offset = max(scores) + 10
+    winrates = [winrates[i] if i % 2 else winrates[i - 1] for i in range(len(winrates))]
+
     ax_perf.plot(np.arange(len(black)*2), [x for x in black for _ in range(2)], color='black', label='black performance (NN move number choice)')
-    ax_perf.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', label='white performance (NN move number choice)', linestyle='--')
-    ax_scores.plot(moves, scores, color='blue', label='score lead (territory points)')
-    ax_scores.axhline(0, color='black', linewidth=0.5, linestyle='--')
-    ax_scores.grid(True)
-    ax_scores.legend()
+    ax_perf.plot(np.arange(len(white)*2), [x for x in white for _ in range(2)], color='black', linestyle='--', label='white performance (NN move number choice)')
     ax_perf.axhline(0, color='black', linewidth=0.5, linestyle='--')
     ax_perf.grid(True)
     ax_perf.legend()
 
-    plt.tight_layout(rect=[0, 0, 1, 1])  # leave space for bottom label
-    plt.show()
+    ax_winrates.plot(moves, winrates, color='red', label='winrate')
+    ax_winrates.axhline(50, color='black', linewidth=0.5, linestyle='--')
+    ax_winrates.grid(True)
+    ax_winrates.legend()
 
+    ax_scores.plot(moves, scores, color='blue', label='score lead')
+    ax_scores.axhline(0, color='black', linewidth=0.5, linestyle='--')
+    ax_scores.grid(True)
+    ax_scores.legend()
+
+    plt.tight_layout()
+    plt.show()
 def print_move(move):
     row = math.floor(move / 19)
     col = move % 19
@@ -246,6 +320,7 @@ if __name__ == '__main__':
     black_scores = []
     white_scores = []
     score_lead = []
+    winrates = []
     move_num = 1
     for node in game.get_main_sequence():
         if node.get_move()[0] is not None:
@@ -261,6 +336,7 @@ if __name__ == '__main__':
             result = katago.query(board, moves, komi)
             score = score_move(user_move, prev_policy)
             score_lead.append(result['rootInfo']['scoreLead'])
+            winrates.append(result['rootInfo']['winrate']*100)
             try:
               stones.append((node.get_move()[1][1], node.get_move()[1][0], node.get_move()[0]))
               kifu[node.get_move()[1][0], node.get_move()[1][1]] = move_num
@@ -281,5 +357,5 @@ if __name__ == '__main__':
     score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
     final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
     final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5])
-    draw_go_with_graph(stones, score_lead, black_scores, white_scores, final_label=final_label)
+    draw_go_with_graph(stones, score_lead, winrates, black_scores, white_scores, final_label=final_label)
     katago.close()
