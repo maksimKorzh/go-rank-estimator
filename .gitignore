@@ -2,4 +2,5 @@
 *.swo
 *.swn
 *.un~
+*.sgf
 gtp_logs/
