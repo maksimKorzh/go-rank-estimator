@@ -245,8 +245,10 @@ if __name__ == '__main__':
     winner = game.get_winner()
     board_size = game.get_size()
     root_node = game.get_root()
-    b_player = root_node.get('PB')
-    w_player = root_node.get('PW')
+    try: b_player = root_node.get('PB')
+    except: b_player = 'Black'
+    try: w_player = root_node.get('PW')
+    except: w_player = 'White'
     moves = []
     stones = []
     kifu = {}
