@@ -304,5 +304,5 @@ if __name__ == '__main__':
     if len(black_scores) >= 100:
         estimate_rank(50, 100, score_lead)
         estimate_rank(100, len(black_scores), score_lead)
-    else: estimate_rank(50, len(black_scores), score_lead)
+    elif len(black_scores) > 50: estimate_rank(50, len(black_scores), score_lead)
     katago.close()
