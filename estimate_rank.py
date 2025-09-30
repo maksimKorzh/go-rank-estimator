@@ -210,9 +210,6 @@ def score_move(move, policy):
     return best_moves.index(user_move_score)+1
 
 if __name__ == '__main__':
-#    try:
-#      if input('Download last cmk game from IGS? (y/n)') == 'y': download_game()
-#    except: print('Failed. Probably you are not CMK. Using existing "game.sgf"')
     description = '''
     Example script showing how to run KataGo analysis engine and query it from python.
     '''
@@ -240,6 +237,23 @@ if __name__ == '__main__':
 
     args = vars(parser.parse_args())
     print(args)
+    
+    def estimate_rank(move_from, move_to, score_lead):
+        if move_to > len(black_scores): move_to = len(black_scores)
+        black_performance = 0;
+        white_performance = 0;
+        for i in black_scores[move_from: move_to]: black_performance += i
+        for i in white_scores[move_from: move_to]: white_performance += i
+        move_len = move_to - move_from
+        black_performance = math.floor(black_performance / move_len);
+        white_performance = math.floor(white_performance / move_len);
+        black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
+        white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
+        score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
+        final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
+        final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5]) + ' (Moves ' + str(move_from*2) + '-' + str(move_to*2) + ')'
+        draw_go_with_graph(stones, score_lead, winrates, black_scores, white_scores, final_label=final_label)
+        return black_rank, white_rank
 
     with open(args['sgf_file'], 'rb') as f: game = sgf.Sgf_game.from_bytes(f.read())
     winner = game.get_winner()
@@ -285,16 +299,8 @@ if __name__ == '__main__':
             if node.get_move()[0] == 'b': black_scores.append(score)
             elif node.get_move()[0] == 'w': white_scores.append(score)
             prev_policy = result['policy']
-    black_performance = 0;
-    white_performance = 0;
-    for i in black_scores: black_performance += i
-    for i in white_scores: white_performance += i
-    black_performance = math.floor(black_performance / len(black_scores));
-    white_performance = math.floor(white_performance / len(white_scores));
-    black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
-    white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
-    score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
-    final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
-    final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5])
-    draw_go_with_graph(stones, score_lead, winrates, black_scores, white_scores, final_label=final_label)
+    estimate_rank(0, len(black_scores), score_lead)
+    estimate_rank(0, 50, score_lead)
+    estimate_rank(50, 100, score_lead)
+    estimate_rank(100, len(black_scores), score_lead)
     katago.close()
