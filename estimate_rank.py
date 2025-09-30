@@ -300,7 +300,8 @@ if __name__ == '__main__':
             elif node.get_move()[0] == 'w': white_scores.append(score)
             prev_policy = result['policy']
     estimate_rank(0, len(black_scores), score_lead)
-    estimate_rank(0, 50, score_lead)
-    estimate_rank(50, 100, score_lead)
-    estimate_rank(100, len(black_scores), score_lead)
+    if len(black_scores) >= 50: estimate_rank(0, 50, score_lead)
+    if len(black_scores) >= 100:
+        estimate_rank(50, 100, score_lead)
+        estimate_rank(100, len(black_scores), score_lead)
     katago.close()
