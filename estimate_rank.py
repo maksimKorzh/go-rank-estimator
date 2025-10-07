@@ -244,7 +244,7 @@ if __name__ == '__main__':
         white_performance = 0;
         for i in black_scores[move_from: move_to]: black_performance += i
         for i in white_scores[move_from: move_to]: white_performance += i
-        move_len = move_to - move_from
+        move_len = max(1, move_to - move_from)
         black_performance = math.floor(black_performance / move_len);
         white_performance = math.floor(white_performance / move_len);
         black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
