@@ -128,19 +128,15 @@ def print_policy(policy):
     print()
 
 def draw_go_with_graph(stones, scores, winrates, black, white, final_label=None, board_size=19):
-    fig = plt.figure(figsize=(12, 8))
+    fig = plt.figure(figsize=(5,10))
     fig.canvas.manager.set_window_title('KataGo Rank Estimator')
 
-    # Create a 3-row, 2-column layout with custom width ratios
-    gs = gridspec.GridSpec(3, 2, width_ratios=[1, 1], height_ratios=[1, 1, 1])
-
-    # Go board takes all 3 rows of the left column
-    ax_board = fig.add_subplot(gs[:, 0])
-
-    # Each graph in its own row in the right column
-    ax_scores = fig.add_subplot(gs[0, 1])
-    ax_winrates = fig.add_subplot(gs[1, 1])
-    ax_perf = fig.add_subplot(gs[2, 1])
+    gs = gridspec.GridSpec(4, 1, height_ratios=[3, 1, 1, 1])  # make board taller
+    
+    ax_board = fig.add_subplot(gs[0, 0])  # Go board
+    ax_scores = fig.add_subplot(gs[1, 0])
+    ax_winrates = fig.add_subplot(gs[2, 0])
+    ax_perf = fig.add_subplot(gs[3, 0])
 
     # -------------------- Draw Go board --------------------
     for i in range(board_size):
@@ -153,19 +149,19 @@ def draw_go_with_graph(stones, scores, winrates, black, white, final_label=None,
     stars = hoshi_points(board_size)
     for x in stars:
         for y in stars:
-            ax_board.plot(x, y, 'ko', markersize=6)
+            ax_board.plot(x, y, 'ko', markersize=4)
 
     for idx, (x, y, color) in enumerate(stones):
         if color == 'b':
-            ax_board.plot(x, y, 'ko', markersize=18)
+            ax_board.plot(x, y, 'ko', markersize=12)
             text_color = 'white'
         elif color == 'w':
-            ax_board.plot(x, y, 'o', markersize=18, markerfacecolor='white', markeredgecolor='black')
+            ax_board.plot(x, y, 'o', markersize=12, markerfacecolor='white', markeredgecolor='black')
             text_color = 'black'
         else:
             continue
         try:
-            ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=6, ha='center', va='center', fontweight='bold')
+            ax_board.text(x, y, str(kifu[y, x]), color=text_color, fontsize=5, ha='center', va='center', fontweight='bold')
         except:
             pass
 
