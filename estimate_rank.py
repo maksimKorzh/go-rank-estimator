@@ -246,7 +246,7 @@ if __name__ == '__main__':
         black_rank = str((10-black_performance))+ 'd' if black_performance < 10 else str((black_performance - 9))+ 'k';
         white_rank = str((10-white_performance))+ 'd' if white_performance < 10 else str((white_performance - 9))+ 'k';
         score_lead = [v if i % 2 else -v for i, v in enumerate(score_lead)]
-        final_label = b_player + ' [' + str(black_rank) + '] vs '+ w_player +' [' + str(white_rank) + '], '
+        final_label = b_player + '[' + str(black_rank) + '] vs '+ w_player +'[' + str(white_rank) + '] '
         final_label += ('B+' + str(score_lead[-1])[0:4] if score_lead[-1]>0 else 'W+' + str(score_lead[-1])[1:5]) + ' (Moves ' + str(move_from*2) + '-' + str(move_to*2) + ')'
         draw_go_with_graph(stones, score_lead, winrates, black_scores, white_scores, final_label=final_label)
         return black_rank, white_rank
